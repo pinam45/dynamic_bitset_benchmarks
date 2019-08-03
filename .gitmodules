@@ -1,3 +1,9 @@
 [submodule "extlibs/dynamic_bitset"]
 	path = extlibs/dynamic_bitset
 	url = https://github.com/pinam45/dynamic_bitset
+[submodule "extlibs/benchmark"]
+	path = extlibs/benchmark
+	url = https://github.com/google/benchmark
+[submodule "cmake/CMutils"]
+	path = cmake/CMutils
+	url = https://github.com/pinam45/CMutils
