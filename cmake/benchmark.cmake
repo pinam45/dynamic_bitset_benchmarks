@@ -1,0 +1,20 @@
+message(STATUS "Configuring benchmark")
+
+get_filename_component(BENCHMARK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extlibs/benchmark ABSOLUTE)
+
+# Submodule check
+cmutils_directory_is_empty(is_empty "${BENCHMARK_DIR}")
+if(is_empty)
+	message(FATAL_ERROR "benchmark dependency is missing, maybe you didn't pull the git submodules")
+endif()
+
+# Include benchmark
+set(BENCHMARK_ENABLE_TESTING OFF CACHE INTERNAL "")
+set(BENCHMARK_ENABLE_LTO ON CACHE INTERNAL "")
+set(BENCHMARK_ENABLE_INSTALL OFF CACHE INTERNAL "")
+add_subdirectory(${BENCHMARK_DIR})
+if(NOT TARGET benchmark)
+	message(FATAL_ERROR "benchmark target is missing")
+endif()
+
+message(STATUS "Configuring benchmark - Done")
