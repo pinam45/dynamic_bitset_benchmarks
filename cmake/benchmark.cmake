@@ -17,4 +17,10 @@ if(NOT TARGET benchmark)
 	message(FATAL_ERROR "benchmark target is missing")
 endif()
 
+# Set benchmark targets IDE folder
+cmutils_target_set_ide_folder(benchmark "extlibs/benchmark")
+if(TARGET benchmark_main)
+	cmutils_target_set_ide_folder(benchmark_main "extlibs/benchmark")
+endif()
+
 message(STATUS "Configuring benchmark - Done")

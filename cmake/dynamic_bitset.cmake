@@ -14,10 +14,15 @@ endif()
 #set(DYNAMICBITSET_BUILD_TESTS OFF CACHE INTERNAL "")
 #set(DYNAMICBITSET_BUILD_EXAMPLE OFF CACHE INTERNAL "")
 #set(DYNAMICBITSET_FORMAT_TARGET OFF CACHE INTERNAL "")
-#set(DYNAMICBITSET_HEADERS_TARGET_IDE OFF CACHE INTERNAL "")
+set(DYNAMICBITSET_HEADERS_TARGET_IDE ON CACHE INTERNAL "")
 add_subdirectory(${DYNAMIC_BITSET_DIR})
 if(NOT TARGET dynamic_bitset)
 	message(FATAL_ERROR "dynamic_bitset target is missing")
+endif()
+
+# Set dynamic_bitset targets IDE folder
+if(TARGET dynamic_bitset_headers_for_ide)
+	cmutils_target_set_ide_folder(dynamic_bitset_headers_for_ide "extlibs/dynamic_bitset")
 endif()
 
 message(STATUS "Configuring dynamic_bitset - Done")
