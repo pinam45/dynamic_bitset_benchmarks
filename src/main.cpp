@@ -6,18 +6,19 @@
 // https://opensource.org/licenses/MIT
 //
 #include <benchmark/benchmark.h>
+#include <dynamic_bitset.hpp>
 
-static void BM_StringCreation(benchmark::State& state) {
-	for (auto _ : state)
-		std::string empty_string;
+template<typename T>
+void constructor_default(benchmark::State& state)
+{
+	for(auto _: state)
+	{
+		benchmark::DoNotOptimize(dynamic_bitset<T>());
+	}
 }
-BENCHMARK(BM_StringCreation);
-
-static void BM_StringCopy(benchmark::State& state) {
-	std::string x = "hello";
-	for (auto _ : state)
-		std::string copy(x);
-}
-BENCHMARK(BM_StringCopy);
+BENCHMARK_TEMPLATE(constructor_default, uint8_t);
+BENCHMARK_TEMPLATE(constructor_default, uint16_t);
+BENCHMARK_TEMPLATE(constructor_default, uint32_t);
+BENCHMARK_TEMPLATE(constructor_default, uint64_t);
 
 BENCHMARK_MAIN();
