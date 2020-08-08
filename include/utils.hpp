@@ -10,6 +10,7 @@
 
 #include <type_traits>
 #include <climits>
+#include <cstddef>
 
 template<typename T>
 constexpr size_t bits_number = sizeof(T) * CHAR_BIT;
