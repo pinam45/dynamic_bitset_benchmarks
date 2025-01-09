@@ -1,6 +1,6 @@
 [submodule "extlibs/dynamic_bitset"]
-	path = extlibs/dynamic_bitset
+	path = external/dynamic_bitset
 	url = https://github.com/pinam45/dynamic_bitset
 [submodule "extlibs/benchmark"]
-	path = extlibs/benchmark
+	path = external/benchmark
 	url = https://github.com/google/benchmark
