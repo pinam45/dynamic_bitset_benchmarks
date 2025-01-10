@@ -3,8 +3,7 @@ message(STATUS "Configuring dynamic_bitset")
 get_filename_component(DYNAMIC_BITSET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extlibs/dynamic_bitset ABSOLUTE)
 
 # Submodule check
-cmutils_directory_is_empty(is_empty "${DYNAMIC_BITSET_DIR}")
-if(is_empty)
+if(NOT EXISTS ${DYNAMIC_BITSET_DIR}/CMakeLists.txt)
 	message(FATAL_ERROR "dynamic_bitset dependency is missing, maybe you didn't pull the git submodules")
 endif()
 
@@ -20,9 +19,9 @@ if(NOT TARGET dynamic_bitset)
 	message(FATAL_ERROR "dynamic_bitset target is missing")
 endif()
 
-# Set dynamic_bitset targets IDE folder
+# Set IDE folder
 if(TARGET dynamic_bitset_headers_for_ide)
-	cmutils_target_set_ide_folder(dynamic_bitset_headers_for_ide "extlibs/dynamic_bitset")
+	set_target_properties(dynamic_bitset_headers_for_ide PROPERTIES FOLDER extlibs/dynamic_bitset)
 endif()
 
 message(STATUS "Configuring dynamic_bitset - Done")

@@ -3,8 +3,7 @@ message(STATUS "Configuring benchmark")
 get_filename_component(BENCHMARK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extlibs/benchmark ABSOLUTE)
 
 # Submodule check
-cmutils_directory_is_empty(is_empty "${BENCHMARK_DIR}")
-if(is_empty)
+if(NOT EXISTS ${BENCHMARK_DIR}/CMakeLists.txt)
 	message(FATAL_ERROR "benchmark dependency is missing, maybe you didn't pull the git submodules")
 endif()
 
@@ -20,10 +19,7 @@ if(NOT TARGET benchmark)
 	message(FATAL_ERROR "benchmark target is missing")
 endif()
 
-# Set benchmark targets IDE folder
-cmutils_target_set_ide_folder(benchmark "extlibs/benchmark")
-if(TARGET benchmark_main)
-	cmutils_target_set_ide_folder(benchmark_main "extlibs/benchmark")
-endif()
+# Set IDE folder
+set_target_properties(benchmark PROPERTIES FOLDER extlibs/benchmark)
 
 message(STATUS "Configuring benchmark - Done")
