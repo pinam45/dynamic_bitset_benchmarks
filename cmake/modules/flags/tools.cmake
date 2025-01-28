@@ -30,62 +30,74 @@ function(custom_add_base_flags)
         message(FATAL_ERROR "Unexpected arguments: ${arg_custom_add_base_flags_UNPARSED_ARGUMENTS}")
     endif()
 
-    # Initialize flags
-    set(NEW_CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-    set(NEW_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(NEW_CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-    set(NEW_CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
+    # Initialize flags lists
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        string(REPLACE " " ";" CMAKE_${flag_type}_LIST "${CMAKE_${flag_type}}")
+    endforeach()
 
     # Add compiler flags
     foreach(flag ${arg_custom_add_base_flags_COMPILER_FLAGS})
-        set(NEW_CMAKE_C_FLAGS "${NEW_CMAKE_C_FLAGS} ${flag}")
-        set(NEW_CMAKE_CXX_FLAGS "${NEW_CMAKE_CXX_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_LIST "${flag}")
+        list(APPEND CMAKE_CXX_FLAGS_LIST "${flag}")
     endforeach()
 
     # Add C specific flags
     foreach(flag ${arg_custom_add_base_flags_C_FLAGS})
-        set(NEW_CMAKE_C_FLAGS "${NEW_CMAKE_C_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_LIST "${flag}")
     endforeach()
 
     # Add C++ specific flags
     foreach(flag ${arg_custom_add_base_flags_CXX_FLAGS})
-        set(NEW_CMAKE_CXX_FLAGS "${NEW_CMAKE_CXX_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_CXX_FLAGS_LIST "${flag}")
     endforeach()
 
     # Add linker flags
     foreach(flag ${arg_custom_add_base_flags_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS "${NEW_CMAKE_EXE_LINKER_FLAGS} ${flag}")
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS "${NEW_CMAKE_SHARED_LINKER_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_LIST "${flag}")
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_LIST "${flag}")
     endforeach()
 
     # Add executable linker flags
     foreach(flag ${arg_custom_add_base_flags_EXE_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS "${NEW_CMAKE_EXE_LINKER_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_LIST "${flag}")
     endforeach()
 
     # Add shared libraries linker flags
     foreach(flag ${arg_custom_add_base_flags_SHARED_LINKER_FLAGS})
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS "${NEW_CMAKE_SHARED_LINKER_FLAGS} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_LIST "${flag}")
+    endforeach()
+
+    # Go from lists to space separated strings
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        list(REMOVE_DUPLICATES CMAKE_${flag_type}_LIST)
+        string(REPLACE ";" " " CMAKE_${flag_type} "${CMAKE_${flag_type}_LIST}")
+        string(STRIP "${CMAKE_${flag_type}}" CMAKE_${flag_type})
     endforeach()
 
     # Set the new flags in the cache
     set(CMAKE_C_FLAGS
-      "${NEW_CMAKE_C_FLAGS}"
+      "${CMAKE_C_FLAGS}"
       CACHE STRING "Flags used by the C compiler"
       FORCE
     )
     set(CMAKE_CXX_FLAGS
-      "${NEW_CMAKE_CXX_FLAGS}"
+      "${CMAKE_CXX_FLAGS}"
       CACHE STRING "Flags used by the CXX compiler"
       FORCE
     )
     set(CMAKE_EXE_LINKER_FLAGS
-      "${NEW_CMAKE_EXE_LINKER_FLAGS}"
+      "${CMAKE_EXE_LINKER_FLAGS}"
       CACHE STRING "Linker flags to be used to create executables"
       FORCE
     )
     set(CMAKE_SHARED_LINKER_FLAGS
-      "${NEW_CMAKE_SHARED_LINKER_FLAGS}"
+      "${CMAKE_SHARED_LINKER_FLAGS}"
       CACHE STRING "Linker lags to be used to create shared libraries"
       FORCE
     )
@@ -100,10 +112,7 @@ function(custom_add_base_flags)
 
     # Print the new flags
     foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
-        string(REPLACE ";" " " flags_spaced "${CMAKE_${flag_type}}")
-        if(flags_spaced)
-            message(STATUS "[custom] ${flag_type}: set to \"${flags_spaced}\"")
-        endif()
+        message(STATUS "${flag_type}: set to \"${CMAKE_${flag_type}}\"")
     endforeach()
 endfunction()
 
@@ -120,70 +129,81 @@ function(custom_build_type_set_base_flags build_type)
     endif()
     string(TOUPPER ${build_type} build_type)
 
-    # Initialize flags from another build type if specified
+    # Initialize flags lists from another build type if specified
     if(arg_custom_build_type_set_base_flags_INIT_FROM)
         string(TOUPPER "${arg_custom_build_type_set_base_flags_INIT_FROM}" init_from_build_type)
-        set(NEW_CMAKE_C_FLAGS_${build_type} "${CMAKE_C_FLAGS_${init_from_build_type}}")
-        set(NEW_CMAKE_CXX_FLAGS_${build_type} "${CMAKE_CXX_FLAGS_${init_from_build_type}}")
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${CMAKE_EXE_LINKER_FLAGS_${init_from_build_type}}")
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${CMAKE_SHARED_LINKER_FLAGS_${init_from_build_type}}")
+        foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+            string(REPLACE " " ";" CMAKE_${flag_type}_${build_type}_LIST "${CMAKE_${flag_type}_${init_from_build_type}}")
+        endforeach()
     else()
-        set(NEW_CMAKE_C_FLAGS_${build_type})
-        set(NEW_CMAKE_CXX_FLAGS_${build_type})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type})
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type})
+        foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+            set(CMAKE_${flag_type}_${build_type}_LIST)
+        endforeach()
     endif()
 
     # Add compiler flags
     foreach(flag ${arg_custom_build_type_set_base_flags_COMPILER_FLAGS})
-        set(NEW_CMAKE_C_FLAGS_${build_type} "${NEW_CMAKE_C_FLAGS_${build_type}} ${flag}")
-        set(NEW_CMAKE_CXX_FLAGS_${build_type} "${NEW_CMAKE_CXX_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_${build_type}_LIST "${flag}")
+        list(APPEND CMAKE_CXX_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add C specific flags
     foreach(flag ${arg_custom_build_type_set_base_flags_C_FLAGS})
-        set(NEW_CMAKE_C_FLAGS_${build_type} "${NEW_CMAKE_C_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add C++ specific flags
     foreach(flag ${arg_custom_build_type_set_base_flags_CXX_FLAGS})
-        set(NEW_CMAKE_CXX_FLAGS_${build_type} "${NEW_CMAKE_CXX_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_CXX_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add linker flags
     foreach(flag ${arg_custom_build_type_set_base_flags_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}} ${flag}")
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_${build_type}_LIST "${flag}")
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add executable linker flags
     foreach(flag ${arg_custom_build_type_set_base_flags_EXE_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add shared libraries linker flags
     foreach(flag ${arg_custom_build_type_set_base_flags_SHARED_LINKER_FLAGS})
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_${build_type}_LIST "${flag}")
+    endforeach()
+
+    # Go from lists to space separated strings
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        list(REMOVE_DUPLICATES CMAKE_${flag_type}_${build_type}_LIST)
+        string(REPLACE ";" " " CMAKE_${flag_type}_${build_type} "${CMAKE_${flag_type}_${build_type}_LIST}")
+        string(STRIP "${CMAKE_${flag_type}_${build_type}}" CMAKE_${flag_type}_${build_type})
     endforeach()
 
     # Set the new flags in the cache
     set(CMAKE_C_FLAGS_${build_type}
-      "${NEW_CMAKE_C_FLAGS_${build_type}}"
+      "${CMAKE_C_FLAGS_${build_type}}"
       CACHE STRING "Flags used by the C compiler for ${build_type} build type"
       FORCE
     )
     set(CMAKE_CXX_FLAGS_${build_type}
-      "${NEW_CMAKE_CXX_FLAGS_${build_type}}"
+      "${CMAKE_CXX_FLAGS_${build_type}}"
       CACHE STRING "Flags used by the CXX compiler for ${build_type} build type"
       FORCE
     )
     set(CMAKE_EXE_LINKER_FLAGS_${build_type}
-      "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}}"
+      "${CMAKE_EXE_LINKER_FLAGS_${build_type}}"
       CACHE STRING "Linker flags to be used to create executables for ${build_type} build type."
       FORCE
     )
     set(CMAKE_SHARED_LINKER_FLAGS_${build_type}
-      "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}}"
+      "${CMAKE_SHARED_LINKER_FLAGS_${build_type}}"
       CACHE STRING "Linker lags to be used to create shared libraries for ${build_type} build type."
       FORCE
     )
@@ -197,12 +217,9 @@ function(custom_build_type_set_base_flags build_type)
     )
 
     # Print the new flags
-     foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
-         string(REPLACE ";" " " flags_spaced "${CMAKE_${flag_type}_${build_type}}")
-         if(flags_spaced)
-             message(STATUS "[custom] ${build_type} ${flag_type}: set to \"${flags_spaced}\"")
-         endif()
-     endforeach()
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        message(STATUS "${build_type} ${flag_type}: set to \"${CMAKE_${flag_type}_${build_type}}\"")
+    endforeach()
 endfunction()
 
 function(custom_build_type_add_base_flags build_type)
@@ -218,62 +235,74 @@ function(custom_build_type_add_base_flags build_type)
     endif()
     string(TOUPPER ${build_type} build_type)
 
-    # Initialize flags
-    set(NEW_CMAKE_C_FLAGS_${build_type} "${CMAKE_C_FLAGS_${build_type}}")
-    set(NEW_CMAKE_CXX_FLAGS_${build_type} "${CMAKE_CXX_FLAGS_${build_type}}")
-    set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${CMAKE_EXE_LINKER_FLAGS_${build_type}}")
-    set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${CMAKE_SHARED_LINKER_FLAGS_${build_type}}")
+    # Initialize flags lists
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        string(REPLACE " " ";" CMAKE_${flag_type}_${build_type}_LIST "${CMAKE_${flag_type}_${build_type}}")
+    endforeach()
 
     # Add compiler flags
     foreach(flag ${arg_custom_build_type_add_base_flags_COMPILER_FLAGS})
-        set(NEW_CMAKE_C_FLAGS_${build_type} "${NEW_CMAKE_C_FLAGS_${build_type}} ${flag}")
-        set(NEW_CMAKE_CXX_FLAGS_${build_type} "${NEW_CMAKE_CXX_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_${build_type}_LIST "${flag}")
+        list(APPEND CMAKE_CXX_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add C specific flags
     foreach(flag ${arg_custom_build_type_add_base_flags_C_FLAGS})
-        set(NEW_CMAKE_C_FLAGS_${build_type} "${NEW_CMAKE_C_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_C_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add C++ specific flags
     foreach(flag ${arg_custom_build_type_add_base_flags_CXX_FLAGS})
-        set(NEW_CMAKE_CXX_FLAGS_${build_type} "${NEW_CMAKE_CXX_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_CXX_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add linker flags
     foreach(flag ${arg_custom_build_type_add_base_flags_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}} ${flag}")
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_${build_type}_LIST "${flag}")
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add executable linker flags
     foreach(flag ${arg_custom_build_type_add_base_flags_EXE_LINKER_FLAGS})
-        set(NEW_CMAKE_EXE_LINKER_FLAGS_${build_type} "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_EXE_LINKER_FLAGS_${build_type}_LIST "${flag}")
     endforeach()
 
     # Add shared libraries linker flags
     foreach(flag ${arg_custom_build_type_add_base_flags_SHARED_LINKER_FLAGS})
-        set(NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type} "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}} ${flag}")
+        string(STRIP "${flag}" flag)
+        list(APPEND CMAKE_SHARED_LINKER_FLAGS_${build_type}_LIST "${flag}")
+    endforeach()
+
+    # Go from lists to space separated strings
+    foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
+        list(REMOVE_DUPLICATES CMAKE_${flag_type}_${build_type}_LIST)
+        string(REPLACE ";" " " CMAKE_${flag_type}_${build_type} "${CMAKE_${flag_type}_${build_type}_LIST}")
+        string(STRIP "${CMAKE_${flag_type}_${build_type}}" CMAKE_${flag_type}_${build_type})
     endforeach()
 
     # Set the new flags in the cache
     set(CMAKE_C_FLAGS_${build_type}
-      "${NEW_CMAKE_C_FLAGS_${build_type}}"
+      "${CMAKE_C_FLAGS_${build_type}}"
       CACHE STRING "Flags used by the C compiler for ${build_type} build type"
       FORCE
     )
     set(CMAKE_CXX_FLAGS_${build_type}
-      "${NEW_CMAKE_CXX_FLAGS_${build_type}}"
+      "${CMAKE_CXX_FLAGS_${build_type}}"
       CACHE STRING "Flags used by the CXX compiler for ${build_type} build type"
       FORCE
     )
     set(CMAKE_EXE_LINKER_FLAGS_${build_type}
-      "${NEW_CMAKE_EXE_LINKER_FLAGS_${build_type}}"
+      "${CMAKE_EXE_LINKER_FLAGS_${build_type}}"
       CACHE STRING "Linker flags to be used to create executables for ${build_type} build type."
       FORCE
     )
     set(CMAKE_SHARED_LINKER_FLAGS_${build_type}
-      "${NEW_CMAKE_SHARED_LINKER_FLAGS_${build_type}}"
+      "${CMAKE_SHARED_LINKER_FLAGS_${build_type}}"
       CACHE STRING "Linker lags to be used to create shared libraries for ${build_type} build type."
       FORCE
     )
@@ -288,10 +317,7 @@ function(custom_build_type_add_base_flags build_type)
 
     # Print the new flags
     foreach(flag_type C_FLAGS CXX_FLAGS EXE_LINKER_FLAGS SHARED_LINKER_FLAGS)
-        string(REPLACE ";" " " flags_spaced "${CMAKE_${flag_type}_${build_type}}")
-        if(flags_spaced)
-            message(STATUS "[custom] ${build_type} ${flag_type}: set to \"${flags_spaced}\"")
-        endif()
+        message(STATUS "${build_type} ${flag_type}: set to \"${CMAKE_${flag_type}_${build_type}}\"")
     endforeach()
 endfunction()
 
