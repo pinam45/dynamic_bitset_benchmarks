@@ -39,7 +39,7 @@ void sul_dynamic_bitset_and_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        bitset1 &= bitset2;
+        benchmark::DoNotOptimize(bitset1 &= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -73,7 +73,7 @@ void boost_dynamic_bitset_and_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        bitset1 &= bitset2;
+        benchmark::DoNotOptimize(bitset1 &= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -108,7 +108,7 @@ void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        bitset1 &= bitset2;
+        benchmark::DoNotOptimize(bitset1 &= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -140,7 +140,7 @@ void std_bitset_and_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        bitset1 &= bitset2;
+        benchmark::DoNotOptimize(bitset1 &= bitset2);
         benchmark::ClobberMemory();
     }
 
