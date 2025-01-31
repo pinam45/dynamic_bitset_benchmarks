@@ -48,6 +48,12 @@ function(setup_common_flags)
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
 
+    # Choose try_compile build configuration
+    get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+    if(is_multi_config)
+        set(CMAKE_TRY_COMPILE_CONFIGURATION "Release")
+    endif()
+
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)
     foreach(flag ${COMPILER_FLAGS})
@@ -107,6 +113,9 @@ function(setup_asan_flags)
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
 
+    # Choose try_compile build configuration
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "Debug")
+
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)
     foreach(flag ${COMPILER_FLAGS})
@@ -154,6 +163,9 @@ function(setup_ubsan_flags)
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
 
+    # Choose try_compile build configuration
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "Debug")
+
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)
     foreach(flag ${COMPILER_FLAGS})
@@ -200,6 +212,9 @@ function(setup_tsan_flags)
     else()
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
+
+    # Choose try_compile build configuration
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "Debug")
 
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)
@@ -258,6 +273,9 @@ function(setup_sanitize_flags)
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
 
+    # Choose try_compile build configuration
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "Debug")
+
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)
     foreach(flag ${COMPILER_FLAGS})
@@ -309,6 +327,9 @@ function(setup_optimization_flags)
     else()
         message(STATUS "Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
+
+    # Choose try_compile build configuration
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "Release")
 
     # Check compiler flags
     set(CHECKED_COMPILER_FLAGS)

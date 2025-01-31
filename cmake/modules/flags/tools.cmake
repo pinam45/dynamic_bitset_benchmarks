@@ -413,9 +413,12 @@ function(custom_check_cxx_compiler_linker_flag flag var)
         list(APPEND CMAKE_REQUIRED_LINK_OPTIONS "-fsanitize=address")
     endif()
 
-    # Set flag for linker
-    list(APPEND CMAKE_REQUIRED_FLAGS "${flag}")
-    list(APPEND CMAKE_REQUIRED_LINK_OPTIONS "${flag}")
+    # Set flag for linker, except for MSVC and Clang with MSVC frontend variant
+    if(NOT ((CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+      OR (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")))
+        list(APPEND CMAKE_REQUIRED_FLAGS "${flag}")
+        list(APPEND CMAKE_REQUIRED_LINK_OPTIONS "${flag}")
+    endif()
 
     # Do the check
     check_cxx_compiler_flag(${flag} ${check})
