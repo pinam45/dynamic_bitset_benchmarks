@@ -97,8 +97,6 @@ void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
     std::bernoulli_distribution d;
     std::tr2::dynamic_bitset<block_type_t> bitset1;
     std::tr2::dynamic_bitset<block_type_t> bitset2;
-    bitset1.reserve(bits_to_and);
-    bitset2.reserve(bits_to_and);
     for(size_t i = 0; i < bits_to_and; ++i)
     {
         bitset1.push_back(d(gen));

@@ -16,10 +16,10 @@ static constexpr size_t RANGE_MULTIPLIER = 1ull << 2u;
 
 // sul::dynamic_bitset benchmark
 #define SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
-    BENCHMARK_TEMPLATE(sul_dynamic_bitset_and_equal, block_type) \
+    BENCHMARK_TEMPLATE(func, block_type) \
       ->Name("sul::dynamic_bitset<" #block_type "> " name) \
       ->RangeMultiplier(RANGE_MULTIPLIER) \
-      ->Range(RANGE_START, RANGE_END);
+      ->Range(RANGE_START, RANGE_END)
 
 #define SUL_DYNAMIC_BITSET_BENCHMARK(func, name) \
     SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
@@ -28,10 +28,10 @@ static constexpr size_t RANGE_MULTIPLIER = 1ull << 2u;
 
 // boost::dynamic_bitset benchmark
 #define BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
-    BENCHMARK_TEMPLATE(sul_dynamic_bitset_and_equal, block_type) \
+    BENCHMARK_TEMPLATE(func, block_type) \
       ->Name("boost::dynamic_bitset<" #block_type "> " name) \
       ->RangeMultiplier(RANGE_MULTIPLIER) \
-      ->Range(RANGE_START, RANGE_END);
+      ->Range(RANGE_START, RANGE_END)
 
 #define BOOST_DYNAMIC_BITSET_BENCHMARK(func, name) \
     BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
@@ -40,10 +40,10 @@ static constexpr size_t RANGE_MULTIPLIER = 1ull << 2u;
 
 // std::tr2::dynamic_bitset benchmark
 #define STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
-    BENCHMARK_TEMPLATE(sul_dynamic_bitset_and_equal, block_type) \
+    BENCHMARK_TEMPLATE(func, block_type) \
       ->Name("std::tr2::dynamic_bitset<" #block_type "> " name) \
       ->RangeMultiplier(RANGE_MULTIPLIER) \
-      ->Range(RANGE_START, RANGE_END);
+      ->Range(RANGE_START, RANGE_END)
 
 #define STD_TR2_DYNAMIC_BITSET_BENCHMARK(func, name) \
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
