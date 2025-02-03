@@ -50,6 +50,10 @@ static constexpr size_t RANGE_MULTIPLIER = 1ull << 2u;
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint32_t, name); \
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint64_t, name)
 
+// std::tr2::dynamic_bitset benchmark
+#define STD_VECTOR_BOOL_BENCHMARK(func, name) \
+    BENCHMARK(func)->Name("std::vector<bool> " name)->RangeMultiplier(RANGE_MULTIPLIER)->Range(RANGE_START, RANGE_END)
+
 // std::bitset benchmark
 #define STD_BITSET_BENCHMARK_TEMPLATE(func, bits, name) \
     BENCHMARK_TEMPLATE(func, bits)->Name("std::bitset<" #bits "> " name)

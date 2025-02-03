@@ -19,6 +19,7 @@
 #include <bitset>
 #include <chrono>
 #include <random>
+#include <vector>
 
 template<typename block_type_t>
 void sul_dynamic_bitset_and_equal(benchmark::State& state)
@@ -120,6 +121,41 @@ void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
 
 STD_TR2_DYNAMIC_BITSET_BENCHMARK(std_tr2_dynamic_bitset_and_equal, "&=");
 #endif
+
+void std_vector_bool_and_equal(benchmark::State& state)
+{
+    const size_t bits_to_and = static_cast<size_t>(state.range(0));
+    std::minstd_rand gen(SEED);
+    std::bernoulli_distribution d;
+    std::vector<bool> bitset1;
+    std::vector<bool> bitset2;
+    bitset1.reserve(bits_to_and);
+    bitset2.reserve(bits_to_and);
+    for(size_t i = 0; i < bits_to_and; ++i)
+    {
+        bitset1.push_back(d(gen));
+        bitset2.push_back(d(gen));
+    }
+    benchmark::ClobberMemory();
+
+    for(auto _: state)
+    {
+        for(size_t i = 0; i < bits_to_and; ++i)
+        {
+            benchmark::DoNotOptimize(bitset1[i] = bitset1[i] & bitset2[i]);
+        }
+        benchmark::ClobberMemory();
+    }
+
+    state.counters["1_bit_time"] =
+      benchmark::Counter(bits_to_and,
+                         benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
+                         benchmark::Counter::OneK::kIs1000);
+    state.counters["bits_per_second"] =
+      benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+}
+
+STD_VECTOR_BOOL_BENCHMARK(std_vector_bool_and_equal, "&=");
 
 template<size_t size>
 void std_bitset_and_equal(benchmark::State& state)
