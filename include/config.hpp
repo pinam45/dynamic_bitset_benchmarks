@@ -16,54 +16,80 @@ static constexpr size_t RANGE_MULTIPLIER = 1ull << 2u;
 
 // sul::dynamic_bitset benchmark
 #define SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
-    BENCHMARK_TEMPLATE(func, block_type) \
-      ->Name("sul::dynamic_bitset<" #block_type "> " name) \
-      ->RangeMultiplier(RANGE_MULTIPLIER) \
-      ->Range(RANGE_START, RANGE_END)
+    BENCHMARK_TEMPLATE(func, block_type)->Name("sul::dynamic_bitset<" #block_type "> " name)
 
 #define SUL_DYNAMIC_BITSET_BENCHMARK(func, name) \
     SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
     SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint32_t, name); \
     SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint64_t, name)
 
-// boost::dynamic_bitset benchmark
-#define BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
+#define SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, block_type, name) \
     BENCHMARK_TEMPLATE(func, block_type) \
-      ->Name("boost::dynamic_bitset<" #block_type "> " name) \
+      ->Name("sul::dynamic_bitset<" #block_type "> " name) \
       ->RangeMultiplier(RANGE_MULTIPLIER) \
       ->Range(RANGE_START, RANGE_END)
+
+#define SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(func, name) \
+    SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint16_t, name); \
+    SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint32_t, name); \
+    SUL_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint64_t, name)
+
+// boost::dynamic_bitset benchmark
+#define BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
+    BENCHMARK_TEMPLATE(func, block_type)->Name("boost::dynamic_bitset<" #block_type "> " name)
 
 #define BOOST_DYNAMIC_BITSET_BENCHMARK(func, name) \
     BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
     BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint32_t, name); \
     BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint64_t, name)
 
-// std::tr2::dynamic_bitset benchmark
-#define STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
+#define BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, block_type, name) \
     BENCHMARK_TEMPLATE(func, block_type) \
-      ->Name("std::tr2::dynamic_bitset<" #block_type "> " name) \
+      ->Name("boost::dynamic_bitset<" #block_type "> " name) \
       ->RangeMultiplier(RANGE_MULTIPLIER) \
       ->Range(RANGE_START, RANGE_END)
+
+#define BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(func, name) \
+    BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint16_t, name); \
+    BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint32_t, name); \
+    BOOST_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint64_t, name)
+
+// std::tr2::dynamic_bitset benchmark
+#define STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, block_type, name) \
+    BENCHMARK_TEMPLATE(func, block_type)->Name("std::tr2::dynamic_bitset<" #block_type "> " name)
 
 #define STD_TR2_DYNAMIC_BITSET_BENCHMARK(func, name) \
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint16_t, name); \
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint32_t, name); \
     STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE(func, uint64_t, name)
 
-// std::tr2::dynamic_bitset benchmark
-#define STD_VECTOR_BOOL_BENCHMARK(func, name) \
+#define STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, block_type, name) \
+    BENCHMARK_TEMPLATE(func, block_type) \
+      ->Name("std::tr2::dynamic_bitset<" #block_type "> " name) \
+      ->RangeMultiplier(RANGE_MULTIPLIER) \
+      ->Range(RANGE_START, RANGE_END)
+
+#define STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(func, name) \
+    STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint16_t, name); \
+    STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint32_t, name); \
+    STD_TR2_DYNAMIC_BITSET_BENCHMARK_TEMPLATE_RANGE(func, uint64_t, name)
+
+// std::vector<bool> benchmark
+#define STD_VECTOR_BOOL_BENCHMARK(func, name) BENCHMARK(func)->Name("std::vector<bool> " name)
+
+#define STD_VECTOR_BOOL_BENCHMARK_RANGE(func, name) \
     BENCHMARK(func)->Name("std::vector<bool> " name)->RangeMultiplier(RANGE_MULTIPLIER)->Range(RANGE_START, RANGE_END)
 
 // std::bitset benchmark
-#define STD_BITSET_BENCHMARK_TEMPLATE(func, bits, name) \
+#define STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, bits, name) \
     BENCHMARK_TEMPLATE(func, bits)->Name("std::bitset<" #bits "> " name)
 
-#define STD_BITSET_BENCHMARK(func, name) \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 64, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 256, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 1024, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 4096, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 16384, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 65536, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 262144, name); \
-    STD_BITSET_BENCHMARK_TEMPLATE(func, 1048576, name)
+#define STD_BITSET_BENCHMARK_RANGE(func, name) \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 64, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 256, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 1024, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 4096, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 16384, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 65536, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 262144, name); \
+    STD_BITSET_BENCHMARK_TEMPLATE_RANGE(func, 1048576, name)

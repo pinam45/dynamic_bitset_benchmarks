@@ -52,7 +52,7 @@ void sul_dynamic_bitset_and_equal(benchmark::State& state)
       benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-SUL_DYNAMIC_BITSET_BENCHMARK(sul_dynamic_bitset_and_equal, "&=");
+SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_and_equal, "&=");
 
 #ifdef HAS_BOOST
 template<typename block_type_t>
@@ -86,7 +86,7 @@ void boost_dynamic_bitset_and_equal(benchmark::State& state)
       benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-BOOST_DYNAMIC_BITSET_BENCHMARK(boost_dynamic_bitset_and_equal, "&=");
+BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_and_equal, "&=");
 #endif
 
 #ifdef HAS_STD_TR2_DYNAMIC_BITSET
@@ -119,7 +119,7 @@ void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
       benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_TR2_DYNAMIC_BITSET_BENCHMARK(std_tr2_dynamic_bitset_and_equal, "&=");
+STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_and_equal, "&=");
 #endif
 
 void std_vector_bool_and_equal(benchmark::State& state)
@@ -155,7 +155,7 @@ void std_vector_bool_and_equal(benchmark::State& state)
       benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_VECTOR_BOOL_BENCHMARK(std_vector_bool_and_equal, "&=");
+STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_and_equal, "&=");
 
 template<size_t size>
 void std_bitset_and_equal(benchmark::State& state)
@@ -186,4 +186,4 @@ void std_bitset_and_equal(benchmark::State& state)
       benchmark::Counter(size, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_BITSET_BENCHMARK(std_bitset_and_equal, "&=");
+STD_BITSET_BENCHMARK_RANGE(std_bitset_and_equal, "&=");
