@@ -24,14 +24,14 @@
 template<typename block_type_t>
 void sul_dynamic_bitset_and_equal(benchmark::State& state)
 {
-    const size_t bits_to_and = static_cast<size_t>(state.range(0));
+    const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
     sul::dynamic_bitset<block_type_t> bitset1;
     sul::dynamic_bitset<block_type_t> bitset2;
-    bitset1.reserve(bits_to_and);
-    bitset2.reserve(bits_to_and);
-    for(size_t i = 0; i < bits_to_and; ++i)
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
+    for(size_t i = 0; i < bits; ++i)
     {
         bitset1.push_back(d(gen));
         bitset2.push_back(d(gen));
@@ -45,11 +45,11 @@ void sul_dynamic_bitset_and_equal(benchmark::State& state)
     }
 
     state.counters["1_bit_time"] =
-      benchmark::Counter(bits_to_and,
+      benchmark::Counter(bits,
                          benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
                          benchmark::Counter::OneK::kIs1000);
     state.counters["bits_per_second"] =
-      benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
 SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_and_equal, "&=");
@@ -58,14 +58,14 @@ SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_and_equal, "&=");
 template<typename block_type_t>
 void boost_dynamic_bitset_and_equal(benchmark::State& state)
 {
-    const size_t bits_to_and = static_cast<size_t>(state.range(0));
+    const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
     boost::dynamic_bitset<block_type_t> bitset1;
     boost::dynamic_bitset<block_type_t> bitset2;
-    bitset1.reserve(bits_to_and);
-    bitset2.reserve(bits_to_and);
-    for(size_t i = 0; i < bits_to_and; ++i)
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
+    for(size_t i = 0; i < bits; ++i)
     {
         bitset1.push_back(d(gen));
         bitset2.push_back(d(gen));
@@ -79,11 +79,11 @@ void boost_dynamic_bitset_and_equal(benchmark::State& state)
     }
 
     state.counters["1_bit_time"] =
-      benchmark::Counter(bits_to_and,
+      benchmark::Counter(bits,
                          benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
                          benchmark::Counter::OneK::kIs1000);
     state.counters["bits_per_second"] =
-      benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
 BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_and_equal, "&=");
@@ -93,12 +93,12 @@ BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_and_equal, "&=");
 template<typename block_type_t>
 void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
 {
-    const size_t bits_to_and = static_cast<size_t>(state.range(0));
+    const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
     std::tr2::dynamic_bitset<block_type_t> bitset1;
     std::tr2::dynamic_bitset<block_type_t> bitset2;
-    for(size_t i = 0; i < bits_to_and; ++i)
+    for(size_t i = 0; i < bits; ++i)
     {
         bitset1.push_back(d(gen));
         bitset2.push_back(d(gen));
@@ -112,11 +112,11 @@ void std_tr2_dynamic_bitset_and_equal(benchmark::State& state)
     }
 
     state.counters["1_bit_time"] =
-      benchmark::Counter(bits_to_and,
+      benchmark::Counter(bits,
                          benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
                          benchmark::Counter::OneK::kIs1000);
     state.counters["bits_per_second"] =
-      benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
 STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_and_equal, "&=");
@@ -124,14 +124,14 @@ STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_and_equal, "&=");
 
 void std_vector_bool_and_equal(benchmark::State& state)
 {
-    const size_t bits_to_and = static_cast<size_t>(state.range(0));
+    const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
     std::vector<bool> bitset1;
     std::vector<bool> bitset2;
-    bitset1.reserve(bits_to_and);
-    bitset2.reserve(bits_to_and);
-    for(size_t i = 0; i < bits_to_and; ++i)
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
+    for(size_t i = 0; i < bits; ++i)
     {
         bitset1.push_back(d(gen));
         bitset2.push_back(d(gen));
@@ -140,7 +140,7 @@ void std_vector_bool_and_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        for(size_t i = 0; i < bits_to_and; ++i)
+        for(size_t i = 0; i < bits; ++i)
         {
             benchmark::DoNotOptimize(bitset1[i] = bitset1[i] & bitset2[i]);
         }
@@ -148,11 +148,11 @@ void std_vector_bool_and_equal(benchmark::State& state)
     }
 
     state.counters["1_bit_time"] =
-      benchmark::Counter(bits_to_and,
+      benchmark::Counter(bits,
                          benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
                          benchmark::Counter::OneK::kIs1000);
     state.counters["bits_per_second"] =
-      benchmark::Counter(bits_to_and, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
 STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_and_equal, "&=");
@@ -160,12 +160,13 @@ STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_and_equal, "&=");
 template<size_t size>
 void std_bitset_and_equal(benchmark::State& state)
 {
+    constexpr size_t bits = size;
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
     std::bitset<size> bitset1;
     std::bitset<size> bitset2;
 
-    for(size_t i = 0; i < size; ++i)
+    for(size_t i = 0; i < bits; ++i)
     {
         bitset1[i] = d(gen);
         bitset2[i] = d(gen);
@@ -179,11 +180,11 @@ void std_bitset_and_equal(benchmark::State& state)
     }
 
     state.counters["1_bit_time"] =
-      benchmark::Counter(size,
+      benchmark::Counter(bits,
                          benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
                          benchmark::Counter::OneK::kIs1000);
     state.counters["bits_per_second"] =
-      benchmark::Counter(size, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
 STD_BITSET_BENCHMARK_RANGE(std_bitset_and_equal, "&=");
