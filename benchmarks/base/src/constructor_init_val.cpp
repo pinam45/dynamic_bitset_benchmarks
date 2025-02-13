@@ -5,8 +5,8 @@
 // See accompanying file LICENSE or copy at
 // https://opensource.org/licenses/MIT
 //
-#include "config.hpp"
-#include "utils.hpp"
+#include <config.hpp>
+#include <utils.hpp>
 
 #include <benchmark/benchmark.h>
 #include <sul/dynamic_bitset.hpp>

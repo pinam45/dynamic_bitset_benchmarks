@@ -5,7 +5,7 @@
 // See accompanying file LICENSE or copy at
 // https://opensource.org/licenses/MIT
 //
-#include "config.hpp"
+#include <config.hpp>
 
 #include <benchmark/benchmark.h>
 #include <sul/dynamic_bitset.hpp>
@@ -22,7 +22,7 @@
 #include <vector>
 
 template<typename block_type_t>
-void sul_dynamic_bitset_minus_equal(benchmark::State& state)
+void sul_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
@@ -40,7 +40,7 @@ void sul_dynamic_bitset_minus_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        benchmark::DoNotOptimize(bitset1 -= bitset2);
+        benchmark::DoNotOptimize(bitset1 |= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -52,11 +52,11 @@ void sul_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_minus_equal, "-=");
+SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_or_equal, "|=");
 
 #ifdef HAS_BOOST
 template<typename block_type_t>
-void boost_dynamic_bitset_minus_equal(benchmark::State& state)
+void boost_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
@@ -74,7 +74,7 @@ void boost_dynamic_bitset_minus_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        benchmark::DoNotOptimize(bitset1 -= bitset2);
+        benchmark::DoNotOptimize(bitset1 |= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -86,12 +86,12 @@ void boost_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_minus_equal, "-=");
+BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_or_equal, "|=");
 #endif
 
 #ifdef HAS_STD_TR2_DYNAMIC_BITSET
 template<typename block_type_t>
-void std_tr2_dynamic_bitset_minus_equal(benchmark::State& state)
+void std_tr2_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
@@ -107,7 +107,7 @@ void std_tr2_dynamic_bitset_minus_equal(benchmark::State& state)
 
     for(auto _: state)
     {
-        benchmark::DoNotOptimize(bitset1 -= bitset2);
+        benchmark::DoNotOptimize(bitset1 |= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -119,10 +119,10 @@ void std_tr2_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_minus_equal, "-=");
+STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_or_equal, "|=");
 #endif
 
-void std_vector_bool_minus_equal(benchmark::State& state)
+void std_vector_bool_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
@@ -142,7 +142,7 @@ void std_vector_bool_minus_equal(benchmark::State& state)
     {
         for(size_t i = 0; i < bits; ++i)
         {
-            benchmark::DoNotOptimize(bitset1[i] = bitset1[i] - bitset2[i]);
+            benchmark::DoNotOptimize(bitset1[i] = bitset1[i] | bitset2[i]);
         }
         benchmark::ClobberMemory();
     }
@@ -155,4 +155,36 @@ void std_vector_bool_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_minus_equal, "-=");
+STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_or_equal, "|=");
+
+template<size_t size>
+void std_bitset_or_equal(benchmark::State& state)
+{
+    constexpr size_t bits = size;
+    std::minstd_rand gen(SEED);
+    std::bernoulli_distribution d;
+    std::bitset<size> bitset1;
+    std::bitset<size> bitset2;
+
+    for(size_t i = 0; i < bits; ++i)
+    {
+        bitset1[i] = d(gen);
+        bitset2[i] = d(gen);
+    }
+    benchmark::ClobberMemory();
+
+    for(auto _: state)
+    {
+        benchmark::DoNotOptimize(bitset1 |= bitset2);
+        benchmark::ClobberMemory();
+    }
+
+    state.counters["1_bit_time"] =
+      benchmark::Counter(bits,
+                         benchmark::Counter::kIsIterationInvariantRate | benchmark::Counter::kInvert,
+                         benchmark::Counter::OneK::kIs1000);
+    state.counters["bits_per_second"] =
+      benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
+}
+
+STD_BITSET_BENCHMARK_RANGE(std_bitset_or_equal, "|=");

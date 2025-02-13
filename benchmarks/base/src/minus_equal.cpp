@@ -5,7 +5,7 @@
 // See accompanying file LICENSE or copy at
 // https://opensource.org/licenses/MIT
 //
-#include "config.hpp"
+#include <config.hpp>
 
 #include <benchmark/benchmark.h>
 #include <sul/dynamic_bitset.hpp>
@@ -19,26 +19,28 @@
 #include <bitset>
 #include <chrono>
 #include <random>
-#include <sstream>
+#include <vector>
 
 template<typename block_type_t>
-void sul_dynamic_bitset_constructor_string(benchmark::State& state)
+void sul_dynamic_bitset_minus_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
-    std::ostringstream oss;
+    sul::dynamic_bitset<block_type_t> bitset1;
+    sul::dynamic_bitset<block_type_t> bitset2;
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
     for(size_t i = 0; i < bits; ++i)
     {
-        oss << (d(gen) ? '1' : '0');
+        bitset1.push_back(d(gen));
+        bitset2.push_back(d(gen));
     }
-    const std::string str = oss.str();
     benchmark::ClobberMemory();
 
     for(auto _: state)
     {
-        sul::dynamic_bitset<block_type_t> bitset(str);
-        benchmark::DoNotOptimize(bitset);
+        benchmark::DoNotOptimize(bitset1 -= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -50,27 +52,29 @@ void sul_dynamic_bitset_constructor_string(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_constructor_string, "constructor_string");
+SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_minus_equal, "-=");
 
 #ifdef HAS_BOOST
 template<typename block_type_t>
-void boost_dynamic_bitset_constructor_string(benchmark::State& state)
+void boost_dynamic_bitset_minus_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
-    std::ostringstream oss;
+    boost::dynamic_bitset<block_type_t> bitset1;
+    boost::dynamic_bitset<block_type_t> bitset2;
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
     for(size_t i = 0; i < bits; ++i)
     {
-        oss << (d(gen) ? '1' : '0');
+        bitset1.push_back(d(gen));
+        bitset2.push_back(d(gen));
     }
-    const std::string str = oss.str();
     benchmark::ClobberMemory();
 
     for(auto _: state)
     {
-        boost::dynamic_bitset<block_type_t> bitset(str);
-        benchmark::DoNotOptimize(bitset);
+        benchmark::DoNotOptimize(bitset1 -= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -82,28 +86,28 @@ void boost_dynamic_bitset_constructor_string(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_constructor_string, "constructor_string");
+BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_minus_equal, "-=");
 #endif
 
 #ifdef HAS_STD_TR2_DYNAMIC_BITSET
 template<typename block_type_t>
-void std_tr2_dynamic_bitset_constructor_string(benchmark::State& state)
+void std_tr2_dynamic_bitset_minus_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
-    std::ostringstream oss;
+    std::tr2::dynamic_bitset<block_type_t> bitset1;
+    std::tr2::dynamic_bitset<block_type_t> bitset2;
     for(size_t i = 0; i < bits; ++i)
     {
-        oss << (d(gen) ? '1' : '0');
+        bitset1.push_back(d(gen));
+        bitset2.push_back(d(gen));
     }
-    const std::string str = oss.str();
     benchmark::ClobberMemory();
 
     for(auto _: state)
     {
-        std::tr2::dynamic_bitset<block_type_t> bitset(str);
-        benchmark::DoNotOptimize(bitset);
+        benchmark::DoNotOptimize(bitset1 -= bitset2);
         benchmark::ClobberMemory();
     }
 
@@ -115,27 +119,31 @@ void std_tr2_dynamic_bitset_constructor_string(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_constructor_string, "constructor_string");
+STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_minus_equal, "-=");
 #endif
 
-template<size_t size>
-void std_bitset_constructor_string(benchmark::State& state)
+void std_vector_bool_minus_equal(benchmark::State& state)
 {
-    constexpr size_t bits = size;
+    const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
     std::bernoulli_distribution d;
-    std::ostringstream oss;
+    std::vector<bool> bitset1;
+    std::vector<bool> bitset2;
+    bitset1.reserve(bits);
+    bitset2.reserve(bits);
     for(size_t i = 0; i < bits; ++i)
     {
-        oss << (d(gen) ? '1' : '0');
+        bitset1.push_back(d(gen));
+        bitset2.push_back(d(gen));
     }
-    const std::string str = oss.str();
     benchmark::ClobberMemory();
 
     for(auto _: state)
     {
-        std::bitset<size> bitset(str);
-        benchmark::DoNotOptimize(bitset);
+        for(size_t i = 0; i < bits; ++i)
+        {
+            benchmark::DoNotOptimize(bitset1[i] = bitset1[i] - bitset2[i]);
+        }
         benchmark::ClobberMemory();
     }
 
@@ -147,4 +155,4 @@ void std_bitset_constructor_string(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_BITSET_BENCHMARK_RANGE(std_bitset_constructor_string, "constructor_string");
+STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_minus_equal, "-=");
