@@ -52,7 +52,7 @@ void sul_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_minus_equal, "-=");
+SUL_DYNAMIC_BITSET_BENCHMARK_RANGE(sul_dynamic_bitset_minus_equal, "minus_equal");
 
 #ifdef HAS_BOOST
 template<typename block_type_t>
@@ -86,7 +86,7 @@ void boost_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_minus_equal, "-=");
+BOOST_DYNAMIC_BITSET_BENCHMARK_RANGE(boost_dynamic_bitset_minus_equal, "minus_equal");
 #endif
 
 #ifdef HAS_STD_TR2_DYNAMIC_BITSET
@@ -119,7 +119,7 @@ void std_tr2_dynamic_bitset_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_minus_equal, "-=");
+STD_TR2_DYNAMIC_BITSET_BENCHMARK_RANGE(std_tr2_dynamic_bitset_minus_equal, "minus_equal");
 #endif
 
 void std_vector_bool_minus_equal(benchmark::State& state)
@@ -155,4 +155,4 @@ void std_vector_bool_minus_equal(benchmark::State& state)
       benchmark::Counter(bits, benchmark::Counter::kIsIterationInvariantRate, benchmark::Counter::OneK::kIs1024);
 }
 
-STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_minus_equal, "-=");
+STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_minus_equal, "minus_equal");
