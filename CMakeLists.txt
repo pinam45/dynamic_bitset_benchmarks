@@ -103,6 +103,9 @@ include(external/dynamic_bitset.cmake)
 include(external/boost.cmake)
 include(external/std_tr2_dynamic_bitset.cmake)
 
+# Libs
+add_subdirectory(libs)
+
 # Benchmarks
 add_subdirectory(benchmarks)
 
