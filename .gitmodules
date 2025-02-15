@@ -4,3 +4,6 @@
 [submodule "extlibs/benchmark"]
 	path = external/benchmark
 	url = https://github.com/google/benchmark
+[submodule "external/expected"]
+	path = external/expected
+	url = https://github.com/TartanLlama/expected
