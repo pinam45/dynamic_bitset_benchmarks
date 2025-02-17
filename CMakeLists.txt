@@ -100,6 +100,7 @@ endif()
 # Dependencies
 include(external/benchmark.cmake)
 include(external/expected.cmake)
+include(external/fmt.cmake)
 include(external/dynamic_bitset.cmake)
 include(external/boost.cmake)
 include(external/std_tr2_dynamic_bitset.cmake)
