@@ -7,5 +7,13 @@ target_include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
+# Link dependencies
+target_link_libraries(
+  uscp INTERFACE
+  # external
+  tl::expected
+  fmt::fmt
+)
+
 # Build in C++20
 target_compile_features(uscp INTERFACE cxx_std_20)
