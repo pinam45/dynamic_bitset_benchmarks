@@ -22,7 +22,7 @@ namespace uscp::problem
         size_t subsets_number = 0;
         std::vector<dynamic_bitset_t> subsets_points;
 
-        explicit instance() noexcept;
+        instance() noexcept = default;
         instance(const instance&) = default;
         instance(instance&&) noexcept = default;
         instance& operator=(const instance&) = default;
