@@ -11,7 +11,11 @@ include_guard()
 
 # MSVC common flags
 macro(custom_msvc_cxx_compiler_common_flags var)
-    set(${var})
+    set(${var}
+      ################################
+      # https://learn.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8
+      /utf-8
+    )
 endmacro()
 macro(custom_msvc_cxx_linker_common_flags var)
     set(${var})
