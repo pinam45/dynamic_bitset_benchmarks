@@ -55,7 +55,7 @@ template<typename dynamic_bitset_t>
         }
 
         // update solution
-        solution.selected_subsets[max_subset_number].set();
+        solution.selected_subsets.set(max_subset_number);
         solution.covered_points = covered_points_with_max_subset;
         solution.cover_all_points = solution.covered_points.all();
     }
