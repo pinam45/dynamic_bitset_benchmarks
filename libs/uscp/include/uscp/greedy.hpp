@@ -7,6 +7,7 @@
 //
 #pragma once
 
+#include <fix/dynamic_bitset.hpp>
 #include <uscp/greedy.hpp>
 #include <uscp/solution.hpp>
 
@@ -19,7 +20,8 @@ namespace uscp::greedy
 } // namespace uscp::greedy
 
 template<typename dynamic_bitset_t>
-[[nodiscard]] uscp::solution<dynamic_bitset_t> uscp::greedy::solve(const uscp::problem::instance<dynamic_bitset_t>& problem) noexcept
+[[nodiscard]] uscp::solution<dynamic_bitset_t>
+uscp::greedy::solve(const uscp::problem::instance<dynamic_bitset_t>& problem) noexcept
 {
     uscp::solution<dynamic_bitset_t> solution(problem);
 
@@ -27,7 +29,7 @@ template<typename dynamic_bitset_t>
     {
         size_t max_subset_number = solution.selected_subsets.size(); // invalid initial value
         dynamic_bitset_t covered_points_with_max_subset(problem.points_number);
-        size_t covered_points_number_with_max_subset = solution.covered_points.count();
+        size_t covered_points_number_with_max_subset = fix::dynamic_bitset::do_count(solution.covered_points);
         dynamic_bitset_t new_covered_points;
         for(size_t i = 0; i < problem.subsets_number; ++i)
         {
@@ -38,8 +40,8 @@ template<typename dynamic_bitset_t>
             }
 
             new_covered_points = solution.covered_points;
-            new_covered_points |= problem.subsets_points[i];
-            const size_t new_covered_points_number = new_covered_points.count();
+            fix::dynamic_bitset::do_or_equal(new_covered_points, problem.subsets_points[i]);
+            const size_t new_covered_points_number = fix::dynamic_bitset::do_count(new_covered_points);
             if(new_covered_points_number > covered_points_number_with_max_subset)
             {
                 max_subset_number = i;
@@ -55,9 +57,9 @@ template<typename dynamic_bitset_t>
         }
 
         // update solution
-        solution.selected_subsets.set(max_subset_number);
+        fix::dynamic_bitset::do_set(solution.selected_subsets, max_subset_number);
         solution.covered_points = covered_points_with_max_subset;
-        solution.cover_all_points = solution.covered_points.all();
+        solution.cover_all_points = fix::dynamic_bitset::do_all(solution.covered_points);
     }
 
     solution.compute_cover();
