@@ -7,6 +7,7 @@
 //
 #pragma once
 
+#include <fix/dynamic_bitset.hpp>
 #include <uscp/instance.hpp>
 
 #include <utility>
@@ -67,12 +68,10 @@ void uscp::solution<dynamic_bitset_t>::compute_cover() noexcept
     assert(selected_subsets.size() == problem.subsets_number);
     assert(covered_points.size() == problem.points_number);
 
-    covered_points.reset();
-    size_t selected_subset = selected_subsets.find_first();
-    while(selected_subset != dynamic_bitset_t::npos)
-    {
-        covered_points |= problem.subsets_points[selected_subset];
-        selected_subset = selected_subsets.find_next(selected_subset);
-    }
-    cover_all_points = covered_points.all();
+    fix::dynamic_bitset::do_reset(covered_points);
+    fix::dynamic_bitset::do_iterate_bits_on(
+      selected_subsets,
+      [&](const size_t selected_subset) noexcept
+      { fix::dynamic_bitset::do_or_equal(covered_points, problem.subsets_points[selected_subset]); });
+    cover_all_points = fix::dynamic_bitset::do_all(covered_points);
 }
