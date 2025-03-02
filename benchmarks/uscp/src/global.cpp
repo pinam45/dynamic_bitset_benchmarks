@@ -16,6 +16,8 @@
 #    include <tr2/dynamic_bitset>
 #endif
 
+#include <vector>
+
 template<>
 uscp::problem::instance<sul::dynamic_bitset<uint16_t>> global::benchmark_instance<sul::dynamic_bitset<uint16_t>>;
 template<>
@@ -43,3 +45,6 @@ template<>
 uscp::problem::instance<std::tr2::dynamic_bitset<uint64_t>>
   global::benchmark_instance<std::tr2::dynamic_bitset<uint64_t>>;
 #endif
+
+template<>
+uscp::problem::instance<std::vector<bool>> global::benchmark_instance<std::vector<bool>>;

@@ -17,6 +17,8 @@
 
 #include <uscp/instance.hpp>
 
+#include <vector>
+
 namespace global
 {
     template<typename dynamic_bitset_t>
@@ -46,4 +48,5 @@ extern template uscp::problem::instance<std::tr2::dynamic_bitset<uint32_t>>
 extern template uscp::problem::instance<std::tr2::dynamic_bitset<uint64_t>>
   global::benchmark_instance<std::tr2::dynamic_bitset<uint64_t>>;
 #    endif
+extern template uscp::problem::instance<std::vector<bool>> global::benchmark_instance<std::vector<bool>>;
 #endif
