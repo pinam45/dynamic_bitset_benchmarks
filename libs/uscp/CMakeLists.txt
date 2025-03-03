@@ -10,6 +10,7 @@ target_include_directories(
 # Link dependencies
 target_link_libraries(
   uscp INTERFACE
+  fix
   # external
   tl::expected
   fmt::fmt
