@@ -68,6 +68,21 @@ namespace fix::dynamic_bitset
     }
 
     template<typename dynamic_bitset_t>
+    constexpr bool do_test(dynamic_bitset_t& bitset, size_t pos) noexcept
+    {
+        // if std::vector<bool>
+        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        {
+            return bitset[pos];
+        }
+        // if sane dynamic_bitset
+        else
+        {
+            return bitset.test(pos);
+        }
+    }
+
+    template<typename dynamic_bitset_t>
     [[nodiscard]] constexpr bool do_all(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
