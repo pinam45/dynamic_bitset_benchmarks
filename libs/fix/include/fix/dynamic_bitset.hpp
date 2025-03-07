@@ -83,6 +83,21 @@ namespace fix::dynamic_bitset
     }
 
     template<typename dynamic_bitset_t>
+    [[nodiscard]] constexpr bool do_none(const dynamic_bitset_t& bitset) noexcept
+    {
+        // if std::vector<bool>
+        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        {
+            return std::ranges::none_of(bitset, [](bool val) noexcept { return val; });
+        }
+        // if sane dynamic_bitset
+        else
+        {
+            return bitset.none();
+        }
+    }
+
+    template<typename dynamic_bitset_t>
     constexpr void do_reset(dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
