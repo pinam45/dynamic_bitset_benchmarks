@@ -61,6 +61,16 @@ bool load_instance(const std::filesystem::path& instance_path) noexcept
 
 int main(int argc, char** argv)
 {
+    // Register greedy benchmark for each dynamic bitset type
+    SUL_DYNAMIC_BITSET_REGISTER_BENCHMARK(sul_dynamic_bitset_uscp_greedy, "greedy");
+#ifdef HAS_BOOST
+    BOOST_DYNAMIC_BITSET_REGISTER_BENCHMARK(boost_dynamic_bitset_uscp_greedy, "greedy");
+#endif
+#ifdef HAS_STD_TR2_DYNAMIC_BITSET
+    STD_TR2_DYNAMIC_BITSET_REGISTER_BENCHMARK(std_tr2_dynamic_bitset_uscp_greedy, "greedy");
+#endif
+    STD_VECTOR_BOOL_REGISTER_BENCHMARK(std_vector_bool_uscp_greedy, "greedy");
+
     // Process arguments
     benchmark::Initialize(&argc, argv);
     if(argc != 2)
