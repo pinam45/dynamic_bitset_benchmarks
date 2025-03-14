@@ -8,7 +8,6 @@
 #include <config.hpp>
 #include <global.hpp>
 #include <greedy.hpp>
-#include <rwls.hpp>
 
 #include <uscp/or_library.hpp>
 
