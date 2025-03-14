@@ -146,6 +146,25 @@ namespace fix::dynamic_bitset
         }
     }
 
+    template<typename dynamic_bitset_t>
+    [[nodiscard]] constexpr size_t do_find_first(const dynamic_bitset_t& bitset) noexcept
+    {
+        // if std::vector<bool>
+        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        {
+            if(const auto it = std::find(bitset.cbegin(), bitset.cend(), true); it != bitset.cend())
+            {
+                return std::distance(bitset.cbegin(), it);
+            }
+            return std::numeric_limits<size_t>::max();
+        }
+        // if sane dynamic_bitset
+        else
+        {
+            return bitset.find_first();
+        }
+    }
+
     template<typename dynamic_bitset_t, typename Function, typename... Parameters>
     constexpr void
     do_iterate_bits_on(dynamic_bitset_t& bitset, Function&& function, Parameters&&... parameters) noexcept
