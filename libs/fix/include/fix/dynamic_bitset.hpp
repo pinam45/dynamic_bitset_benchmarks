@@ -53,6 +53,25 @@ namespace fix::dynamic_bitset
     }
 
     template<typename dynamic_bitset_t>
+    constexpr void do_minus_equal(dynamic_bitset_t& lhs, const dynamic_bitset_t& rhs) noexcept
+    {
+        // if std::vector<bool>
+        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        {
+            // for(const size_t i: std::views::iota(0u, lhs.size()))
+            // {
+            //     lhs[i] = lhs[i] - rhs[i];
+            // }
+            std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(), std::minus<bool>());
+        }
+        // if sane dynamic_bitset
+        else
+        {
+            lhs -= rhs;
+        }
+    }
+
+    template<typename dynamic_bitset_t>
     constexpr void do_set(dynamic_bitset_t& bitset, size_t pos, bool value = true) noexcept
     {
         // if std::vector<bool>
