@@ -134,14 +134,14 @@ uscp::solution<dynamic_bitset_t> uscp::rwls::rwls<dynamic_bitset_t>::improve(
 
     for(size_t step = 0; step < steps; ++step)
     {
-        if(data.uncovered_points.none())
+        if(fix::dynamic_bitset::do_none(data.uncovered_points))
         {
             do
             {
                 data.best_solution = data.current_solution;
                 const size_t selected_subset = select_subset_to_remove_no_timestamp(data);
                 remove_subset(data, selected_subset);
-            } while(data.uncovered_points.none());
+            } while(fix::dynamic_bitset::do_none(data.uncovered_points));
 
             data.best_solution.compute_cover();
             assert(data.best_solution.cover_all_points);
@@ -267,7 +267,7 @@ void uscp::rwls::rwls<dynamic_bitset_t>::init(resolution_data& data,
         data.points_information[i].subsets_covering_in_solution = 0;
         for(size_t subset_covering_point: m_subsets_covering_points[i])
         {
-            if(data.current_solution.selected_subsets.test(subset_covering_point))
+            if(fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, subset_covering_point))
             {
                 ++data.points_information[i].subsets_covering_in_solution;
             }
@@ -291,8 +291,8 @@ void uscp::rwls::rwls<dynamic_bitset_t>::add_subset(resolution_data& data, size_
     assert(data.subsets_information[subset_number].score >= 0);
 
     // add subset to solution
-    data.current_solution.selected_subsets.set(subset_number);
-    data.uncovered_points -= m_problem.subsets_points[subset_number];
+    fix::dynamic_bitset::do_set(data.current_solution.selected_subsets, subset_number);
+    fix::dynamic_bitset::do_minus_equal(data.uncovered_points, m_problem.subsets_points[subset_number]);
 
     // compute new score
     const long long new_score = -data.subsets_information[subset_number].score;
@@ -321,7 +321,8 @@ void uscp::rwls::rwls<dynamic_bitset_t>::add_subset(resolution_data& data, size_
             {
                 data.subsets_information[neighbor].canAddToSolution = true;
 
-                if(neighbor != subset_number && data.current_solution.selected_subsets.test(neighbor))
+                if(neighbor != subset_number
+                   && fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, neighbor))
                 {
                     // lost score because it is no longer the only one to cover this point
                     data.subsets_information[neighbor].score += point_weight;
@@ -351,7 +352,7 @@ void uscp::rwls::rwls<dynamic_bitset_t>::remove_subset(resolution_data& data, si
     assert(data.subsets_information[subset_number].score <= 0);
 
     // remove subset from solution
-    data.current_solution.selected_subsets.reset(subset_number);
+    fix::dynamic_bitset::do_reset(data.current_solution.selected_subsets, subset_number);
 
     // compute new score
     const long long new_score = -data.subsets_information[subset_number].score;
@@ -363,7 +364,7 @@ void uscp::rwls::rwls<dynamic_bitset_t>::remove_subset(resolution_data& data, si
         if(data.points_information[subset_point].subsets_covering_in_solution == 0)
         {
             // point newly uncovered
-            data.uncovered_points.set(subset_point);
+            fix::dynamic_bitset::do_set(data.uncovered_points, subset_point);
             const long long point_weight = data.points_information[subset_point].weight;
             for(size_t neighbor: m_subsets_covering_points[subset_point])
             {
@@ -381,7 +382,8 @@ void uscp::rwls::rwls<dynamic_bitset_t>::remove_subset(resolution_data& data, si
             {
                 data.subsets_information[neighbor].canAddToSolution = true;
 
-                if(neighbor != subset_number && data.current_solution.selected_subsets.test(neighbor))
+                if(neighbor != subset_number
+                   && fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, neighbor))
                 {
                     // gain score because it is now the only one to cover this point in the solution
                     data.subsets_information[neighbor].score -= point_weight;
@@ -426,8 +428,9 @@ bool uscp::rwls::rwls<dynamic_bitset_t>::is_tabu(const resolution_data& data, si
 template<typename dynamic_bitset_t>
 size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_remove_no_timestamp(const resolution_data& data) noexcept
 {
-    assert(data.current_solution.selected_subsets.any());
-    size_t selected_subset = data.current_solution.selected_subsets.find_first();
+    assert(fix::dynamic_bitset::do_any(data.current_solution.selected_subsets));
+    size_t selected_subset = fix::dynamic_bitset::do_find_first(data.current_solution.selected_subsets);
+    assert(selected_subset < data.current_solution.selected_subsets.size());
     long long best_score = data.subsets_information[selected_subset].score;
     fix::dynamic_bitset::do_iterate_bits_on(data.current_solution.selected_subsets,
                                             [&](size_t bit_on) noexcept
@@ -446,7 +449,8 @@ template<typename dynamic_bitset_t>
 size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_remove(const resolution_data& data) noexcept
 {
     assert(data.current_solution.selected_subsets.any());
-    size_t remove_subset = data.current_solution.selected_subsets.find_first();
+    size_t remove_subset = fix::dynamic_bitset::do_find_first(data.current_solution.selected_subsets);
+    assert(remove_subset < data.current_solution.selected_subsets.size());
     std::pair<long long, long long> best_score_minus_timestamp(data.subsets_information[remove_subset].score,
                                                                -data.subsets_information[remove_subset].timestamp);
     fix::dynamic_bitset::do_iterate_bits_on(
@@ -479,7 +483,7 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_add(const resolution
     bool found = false;
     for(size_t subset_covering: m_subsets_covering_points[point_to_cover])
     {
-        if(data.current_solution.selected_subsets.test(subset_covering))
+        if(fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, subset_covering))
         {
             continue;
         }
@@ -515,7 +519,7 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_uncovered_point(resolution_dat
 {
     assert(data.uncovered_points.count() > 0);
     size_t selected_point = 0;
-    std::uniform_int_distribution<size_t> uncovered_point_dist(0, data.uncovered_points.count());
+    std::uniform_int_distribution<size_t> uncovered_point_dist(0, fix::dynamic_bitset::do_count(data.uncovered_points));
     const size_t selected_point_number = uncovered_point_dist(data.generator);
     size_t current_point_number = 0;
     fix::dynamic_bitset::do_iterate_bits_on(data.uncovered_points,
