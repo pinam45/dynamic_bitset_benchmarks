@@ -441,14 +441,14 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_remove_no_timestamp(
                                                     selected_subset = bit_on;
                                                 }
                                             });
-    assert(data.current_solution.selected_subsets.test(selected_subset));
+    assert(fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, selected_subset));
     return selected_subset;
 }
 
 template<typename dynamic_bitset_t>
 size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_remove(const resolution_data& data) noexcept
 {
-    assert(data.current_solution.selected_subsets.any());
+    assert(fix::dynamic_bitset::do_any(data.current_solution.selected_subsets));
     size_t remove_subset = fix::dynamic_bitset::do_find_first(data.current_solution.selected_subsets);
     assert(remove_subset < data.current_solution.selected_subsets.size());
     std::pair<long long, long long> best_score_minus_timestamp(data.subsets_information[remove_subset].score,
@@ -465,7 +465,7 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_remove(const resolut
               remove_subset = bit_on;
           }
       });
-    assert(data.current_solution.selected_subsets.test(remove_subset));
+    assert(fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, remove_subset));
     return remove_subset;
 }
 
@@ -474,7 +474,7 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_add(const resolution
                                                                 size_t point_to_cover) noexcept
 {
     assert(point_to_cover < m_problem.points_number);
-    assert(data.uncovered_points.test(point_to_cover));
+    assert(fix::dynamic_bitset::do_test(data.uncovered_points, point_to_cover));
 
     size_t add_subset = 0;
     bool add_subset_is_tabu = true;
@@ -510,14 +510,14 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_subset_to_add(const resolution
     }
     assert(found);
 
-    assert(!data.current_solution.selected_subsets.test(add_subset));
+    assert(!fix::dynamic_bitset::do_test(data.current_solution.selected_subsets, add_subset));
     return add_subset;
 }
 
 template<typename dynamic_bitset_t>
 size_t uscp::rwls::rwls<dynamic_bitset_t>::select_uncovered_point(resolution_data& data) noexcept
 {
-    assert(data.uncovered_points.count() > 0);
+    assert(fix::dynamic_bitset::do_count(data.uncovered_points) > 0);
     size_t selected_point = 0;
     std::uniform_int_distribution<size_t> uncovered_point_dist(0, fix::dynamic_bitset::do_count(data.uncovered_points));
     const size_t selected_point_number = uncovered_point_dist(data.generator);
@@ -532,7 +532,7 @@ size_t uscp::rwls::rwls<dynamic_bitset_t>::select_uncovered_point(resolution_dat
                                                 }
                                                 return true;
                                             });
-    assert(data.uncovered_points.test(selected_point));
+    assert(fix::dynamic_bitset::do_test(data.uncovered_points, selected_point));
     return selected_point;
 }
 
