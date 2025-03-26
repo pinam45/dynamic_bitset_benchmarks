@@ -62,7 +62,11 @@ namespace fix::dynamic_bitset
             // {
             //     lhs[i] = lhs[i] - rhs[i];
             // }
-            std::transform(lhs.cbegin(), lhs.cend(), rhs.cbegin(), lhs.begin(), std::minus<bool>());
+            std::transform(lhs.cbegin(),
+                           lhs.cend(),
+                           rhs.cbegin(),
+                           lhs.begin(),
+                           [](bool lhs_value, bool rhs_value) noexcept { return lhs_value & !rhs_value; });
         }
         // if sane dynamic_bitset
         else
