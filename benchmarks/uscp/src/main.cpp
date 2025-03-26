@@ -8,6 +8,7 @@
 #include <config.hpp>
 #include <global.hpp>
 #include <greedy.hpp>
+#include <rwls.hpp>
 
 #include <uscp/or_library.hpp>
 
@@ -69,6 +70,16 @@ int main(int argc, char** argv)
     STD_TR2_DYNAMIC_BITSET_REGISTER_BENCHMARK(std_tr2_dynamic_bitset_uscp_greedy, "greedy");
 #endif
     STD_VECTOR_BOOL_REGISTER_BENCHMARK(std_vector_bool_uscp_greedy, "greedy");
+
+    // Register RWLS benchmark for each dynamic bitset type
+    SUL_DYNAMIC_BITSET_REGISTER_BENCHMARK_RANGE(sul_dynamic_bitset_uscp_rwls, "RWLS");
+#ifdef HAS_BOOST
+    BOOST_DYNAMIC_BITSET_REGISTER_BENCHMARK_RANGE(boost_dynamic_bitset_uscp_rwls, "RWLS");
+#endif
+#ifdef HAS_STD_TR2_DYNAMIC_BITSET
+    STD_TR2_DYNAMIC_BITSET_REGISTER_BENCHMARK_RANGE(std_tr2_dynamic_bitset_uscp_rwls, "RWLS");
+#endif
+    STD_VECTOR_BOOL_REGISTER_BENCHMARK_RANGE(std_vector_bool_uscp_rwls, "RWLS");
 
     // Process arguments
     benchmark::Initialize(&argc, argv);
