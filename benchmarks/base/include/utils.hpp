@@ -21,3 +21,16 @@ constexpr bool bit_value(T value, size_t bit_pos)
     assert(bit_pos < bits_number<T>);
     return (value & (T(1) << bit_pos)) != T(0);
 }
+
+template<typename dynamic_bitset_t>
+dynamic_bitset_t random_bitset(std::minstd_rand& gen, size_t bits)
+{
+    std::bernoulli_distribution d;
+    dynamic_bitset_t bitset;
+    bitset.reserve(bits);
+    for(size_t i = 0; i < bits; ++i)
+    {
+        bitset.push_back(d(gen));
+    }
+    return bitset;
+}
