@@ -8,6 +8,7 @@
 #pragma once
 
 #include <algorithm>
+#include <concepts>
 #include <ranges>
 #include <vector>
 
@@ -22,7 +23,7 @@ namespace fix::dynamic_bitset
     [[nodiscard]] constexpr size_t do_count(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             return std::count(bitset.cbegin(), bitset.cend(), true);
         }
@@ -37,7 +38,7 @@ namespace fix::dynamic_bitset
     constexpr void do_or_equal(dynamic_bitset_t& lhs, const dynamic_bitset_t& rhs) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             // for(const size_t i: std::views::iota(0u, lhs.size()))
             // {
@@ -56,7 +57,7 @@ namespace fix::dynamic_bitset
     constexpr void do_minus_equal(dynamic_bitset_t& lhs, const dynamic_bitset_t& rhs) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             // for(const size_t i: std::views::iota(0u, lhs.size()))
             // {
@@ -79,7 +80,7 @@ namespace fix::dynamic_bitset
     constexpr void do_set(dynamic_bitset_t& bitset, size_t pos, bool value = true) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             bitset[pos] = value;
         }
@@ -94,7 +95,7 @@ namespace fix::dynamic_bitset
     constexpr bool do_test(dynamic_bitset_t& bitset, size_t pos) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             return bitset[pos];
         }
@@ -109,7 +110,7 @@ namespace fix::dynamic_bitset
     [[nodiscard]] constexpr bool do_all(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             return std::ranges::all_of(bitset, [](bool val) noexcept { return val; });
         }
@@ -124,7 +125,7 @@ namespace fix::dynamic_bitset
     [[nodiscard]] constexpr bool do_none(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             return std::ranges::none_of(bitset, [](bool val) noexcept { return val; });
         }
@@ -139,7 +140,7 @@ namespace fix::dynamic_bitset
     [[nodiscard]] constexpr bool do_any(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             return std::ranges::any_of(bitset, [](bool val) noexcept { return val; });
         }
@@ -154,7 +155,7 @@ namespace fix::dynamic_bitset
     constexpr void do_reset(dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             // for(const size_t i: std::views::iota(0u, bitset.size()))
             // {
@@ -173,7 +174,7 @@ namespace fix::dynamic_bitset
     constexpr void do_reset(dynamic_bitset_t& bitset, size_t pos) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             bitset[pos] = false;
         }
@@ -188,7 +189,7 @@ namespace fix::dynamic_bitset
     [[nodiscard]] constexpr size_t do_find_first(const dynamic_bitset_t& bitset) noexcept
     {
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
             if(const auto it = std::find(bitset.cbegin(), bitset.cend(), true); it != bitset.cend())
             {
@@ -215,9 +216,9 @@ namespace fix::dynamic_bitset
         }
 
         // if std::vector<bool>
-        if constexpr(std::is_same_v<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
+        if constexpr(std::same_as<std::remove_cvref_t<dynamic_bitset_t>, std::vector<bool>>)
         {
-            if constexpr(std::is_same_v<std::invoke_result_t<Function, size_t, Parameters...>, void>)
+            if constexpr(std::same_as<std::invoke_result_t<Function, size_t, Parameters...>, void>)
             {
                 for(const size_t i_bit: std::views::iota(0u, bitset.size()))
                 {
@@ -253,7 +254,7 @@ namespace fix::dynamic_bitset
                                                      std::forward<Parameters>(parameters)...);
                           })
         {
-            if constexpr(std::is_same_v<std::invoke_result_t<Function, size_t, Parameters...>, void>)
+            if constexpr(std::same_as<std::invoke_result_t<Function, size_t, Parameters...>, void>)
             {
                 size_t i_bit = bitset.find_first();
                 // boost::dynamic_bitset::find_next() returns dynamic_bitset_t::npos
