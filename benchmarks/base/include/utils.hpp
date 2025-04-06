@@ -27,7 +27,10 @@ dynamic_bitset_t random_bitset(std::minstd_rand& gen, size_t bits)
 {
     std::bernoulli_distribution d;
     dynamic_bitset_t bitset;
-    bitset.reserve(bits);
+    if constexpr(requires { dynamic_bitset_t::reserve(bits); })
+    {
+        bitset.reserve(bits);
+    }
     for(size_t i = 0; i < bits; ++i)
     {
         bitset.push_back(d(gen));
