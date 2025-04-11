@@ -37,3 +37,15 @@ dynamic_bitset_t random_bitset(std::minstd_rand& gen, size_t bits)
     }
     return bitset;
 }
+
+template<size_t bits>
+std::bitset<bits> random_std_bitset(std::minstd_rand& gen) noexcept
+{
+    std::bernoulli_distribution d;
+    std::bitset<bits> bitset;
+    for(size_t i = 0; i < bits; ++i)
+    {
+        bitset[i] = d(gen);
+    }
+    return bitset;
+}
