@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #include <config.hpp>
+#include <utils.hpp>
 
 #include <benchmark/benchmark.h>
 #include <sul/dynamic_bitset.hpp>
@@ -26,16 +27,8 @@ void sul_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
-    std::bernoulli_distribution d;
-    sul::dynamic_bitset<block_type_t> bitset1;
-    sul::dynamic_bitset<block_type_t> bitset2;
-    bitset1.reserve(bits);
-    bitset2.reserve(bits);
-    for(size_t i = 0; i < bits; ++i)
-    {
-        bitset1.push_back(d(gen));
-        bitset2.push_back(d(gen));
-    }
+    sul::dynamic_bitset<block_type_t> bitset1 = random_bitset<sul::dynamic_bitset<block_type_t>>(gen, bits);
+    sul::dynamic_bitset<block_type_t> bitset2 = random_bitset<sul::dynamic_bitset<block_type_t>>(gen, bits);
     benchmark::ClobberMemory();
 
     for(auto _: state)
@@ -60,16 +53,8 @@ void boost_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
-    std::bernoulli_distribution d;
-    boost::dynamic_bitset<block_type_t> bitset1;
-    boost::dynamic_bitset<block_type_t> bitset2;
-    bitset1.reserve(bits);
-    bitset2.reserve(bits);
-    for(size_t i = 0; i < bits; ++i)
-    {
-        bitset1.push_back(d(gen));
-        bitset2.push_back(d(gen));
-    }
+    boost::dynamic_bitset<block_type_t> bitset1 = random_bitset<boost::dynamic_bitset<block_type_t>>(gen, bits);
+    boost::dynamic_bitset<block_type_t> bitset2 = random_bitset<boost::dynamic_bitset<block_type_t>>(gen, bits);
     benchmark::ClobberMemory();
 
     for(auto _: state)
@@ -95,14 +80,8 @@ void std_tr2_dynamic_bitset_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
-    std::bernoulli_distribution d;
-    std::tr2::dynamic_bitset<block_type_t> bitset1;
-    std::tr2::dynamic_bitset<block_type_t> bitset2;
-    for(size_t i = 0; i < bits; ++i)
-    {
-        bitset1.push_back(d(gen));
-        bitset2.push_back(d(gen));
-    }
+    std::tr2::dynamic_bitset<block_type_t> bitset1 = random_bitset<std::tr2::dynamic_bitset<block_type_t>>(gen, bits);
+    std::tr2::dynamic_bitset<block_type_t> bitset2 = random_bitset<std::tr2::dynamic_bitset<block_type_t>>(gen, bits);
     benchmark::ClobberMemory();
 
     for(auto _: state)
@@ -126,16 +105,8 @@ void std_vector_bool_or_equal(benchmark::State& state)
 {
     const size_t bits = static_cast<size_t>(state.range(0));
     std::minstd_rand gen(SEED);
-    std::bernoulli_distribution d;
-    std::vector<bool> bitset1;
-    std::vector<bool> bitset2;
-    bitset1.reserve(bits);
-    bitset2.reserve(bits);
-    for(size_t i = 0; i < bits; ++i)
-    {
-        bitset1.push_back(d(gen));
-        bitset2.push_back(d(gen));
-    }
+    std::vector<bool> bitset1 = random_bitset<std::vector<bool>>(gen, bits);
+    std::vector<bool> bitset2 = random_bitset<std::vector<bool>>(gen, bits);
     benchmark::ClobberMemory();
 
     for(auto _: state)
@@ -157,20 +128,12 @@ void std_vector_bool_or_equal(benchmark::State& state)
 
 STD_VECTOR_BOOL_BENCHMARK_RANGE(std_vector_bool_or_equal, "or_equal");
 
-template<size_t size>
+template<size_t bits>
 void std_bitset_or_equal(benchmark::State& state)
 {
-    constexpr size_t bits = size;
     std::minstd_rand gen(SEED);
-    std::bernoulli_distribution d;
-    std::bitset<size> bitset1;
-    std::bitset<size> bitset2;
-
-    for(size_t i = 0; i < bits; ++i)
-    {
-        bitset1[i] = d(gen);
-        bitset2[i] = d(gen);
-    }
+    std::bitset<bits> bitset1 = random_std_bitset<bits>(gen);
+    std::bitset<bits> bitset2 = random_std_bitset<bits>(gen);
     benchmark::ClobberMemory();
 
     for(auto _: state)
